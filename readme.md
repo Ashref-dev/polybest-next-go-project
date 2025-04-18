@@ -45,8 +45,8 @@ Once the containers are running, you can access the different parts of the syste
     *   `http://localhost` (or `http://localhost:80`)
 
 *   **Traefik Dashboard:** Open your web browser and navigate to:
-    *   `http://localhost:8080`
-    *   *(Note: This assumes the port conflict was resolved and Traefik is using port 8080 for the dashboard as confirmed)*
+    *   `http://localhost:8989`
+    *   *(Note: The host port is now 8989 to avoid conflicts with port 8080)*
 
 *   **API Gateway Endpoints:** The backend APIs are accessible through the gateway at the following base paths:
     *   Series API (REST): `http://localhost/api/series`

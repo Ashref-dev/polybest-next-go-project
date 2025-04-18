@@ -7,26 +7,33 @@ services:
   gateway:
     image: traefik:v2.11 
     container_name: traefik_gateway
-    command:
-      - "--api.insecure=true" # Enable insecure API & Dashboard (for dev only!)
-      - "--providers.docker=true" # Enable Docker provider
-      - "--providers.docker.exposedbydefault=false" # Don't expose containers unless labeled
-      - "--entrypoints.web.address=:80" # Define entrypoint for web traffic
-      - "--entrypoints.dashboard.address=:8080" # Define entrypoint for dashboard
-      - "--api.dashboard=true" # Enable the dashboard explicitly on its entrypoint
-      - "--log.level=DEBUG" # Uncomment for more detailed Traefik logs
-      - "--accesslog=true" # Enable access logs
+    # command: # Removed to use static config file
+    #   - "--providers.docker=true"
+    #   - "--providers.docker.exposedbydefault=false"
+    #   - "--entrypoints.web.address=:80"
+    #   - "--entrypoints.dashboard.address=:8080"
+    #   - "--api.dashboard=true"
+    #   - "--log.level=DEBUG"
+    #   - "--accesslog=true"
     ports:
       - "80:80"       # Map host port 80 to Traefik's web entrypoint
-      - "8080:8080"   # Map host port 8080 to Traefik's dashboard entrypoint
+      - "8080:8080"   # Map host port 8080 to Traefik's dashboard entrypoint (container port 8181)
   
     volumes:
       # Mount Docker socket to allow Traefik to detect containers
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      # Optional: Mount static config if needed, but commands cover basic setup
-      # - ./gateway/traefik.yml:/etc/traefik/traefik.yml:ro
+      # Mount static config file (relative path from docker-compose.yml location)
+      - ./gateway/traefik.yml:/etc/traefik/traefik.yml:ro
     networks:
       - webnet
+    labels:
+      # Explicitly create a router for the dashboard
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`localhost`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=dashboard" # Use the dashboard entrypoint
+      # Specify the Docker network Traefik should use for this service
+      - "traefik.docker.network=webnet"
 
   # --- Backend Services ---
   series-api:

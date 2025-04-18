@@ -8,7 +8,6 @@ log:
 # API and Dashboard configuration
 api:
   dashboard: true # Enable the dashboard
-  insecure: true  # WARNING: Only for development/testing. Use auth in production.
 
 # EntryPoints configuration
 entryPoints:
