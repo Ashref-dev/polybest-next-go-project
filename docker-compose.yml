@@ -19,7 +19,7 @@ services:
     ports:
       - "80:80"       # Map host port 80 to Traefik's web entrypoint
       - "8080:8080"   # Map host port 8080 to Traefik's dashboard entrypoint
-      - "8989:8989"   # Map host port 8989 to Traefik's dashboard entrypoint
+  
     volumes:
       # Mount Docker socket to allow Traefik to detect containers
       - /var/run/docker.sock:/var/run/docker.sock:ro

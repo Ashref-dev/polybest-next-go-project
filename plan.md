@@ -90,17 +90,17 @@ This plan outlines the steps to create a distributed system featuring REST, Grap
 
 ## Phase 5: Integration & Orchestration (Docker Compose)
 
-- [ ] **Task 5.1: Create `docker-compose.yml`**
+- [x] **Task 5.1: Create `docker-compose.yml`**
     - Define the version (e.g., `version: '3.8'`).
-- [ ] **Task 5.2: Define Services**
+- [x] **Task 5.2: Define Services**
     - `series-api`: Build from `services/series-api`, expose port (internal), add Docker labels for Traefik routing (e.g., `traefik.http.routers.series.rule=Host(\`localhost\`) && PathPrefix(\`/api/series\`)`).
     - `anime-api`: Build from `services/anime-api`, expose port, add Docker labels for Traefik (e.g., `PathPrefix(\`/api/anime\`)`).
     - `movies-api`: Build from `services/movies-api`, expose port, add Docker labels for Traefik (e.g., `PathPrefix(\`/api/movies\`)`).
     - `frontend`: Build from `frontend`, expose port, add Docker labels for Traefik (e.g., `Host(\`localhost\`) && PathPrefix(\`/\`)`).
     - `gateway`: Use the official `traefik` image, map ports (e.g., `80:80`, `8080:8080` for dashboard), mount volumes (configs, Docker socket).
-- [ ] **Task 5.3: Configure Networking**
+- [x] **Task 5.3: Configure Networking**
     - Define a common network for all services to communicate.
-- [ ] **Task 5.4: Test the Stack**
+- [x] **Task 5.4: Test the Stack**
     - Run `docker-compose up --build`.
     - Access the frontend (`http://localhost`).
     - Access the Traefik dashboard (`http://localhost:8080`).
@@ -113,7 +113,7 @@ This plan outlines the steps to create a distributed system featuring REST, Grap
     - Handle API errors gracefully in the frontend.
 - [ ] **Task 6.2: Add Basic Validation**
     - Implement input validation for API requests (e.g., for POST/PUT).
-- [ ] **Task 6.3: Improve Frontend UI/UX**
+- [x] **Task 6.3: Improve Frontend UI/UX**
     - Add styling (CSS, component library).
     - Improve navigation and user experience.
 - [ ] **Task 6.4: Write README.md**
