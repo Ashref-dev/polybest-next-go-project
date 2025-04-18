@@ -13,9 +13,8 @@ services:
       - "--providers.docker.exposedbydefault=false" # Don't expose containers unless labeled
       - "--entrypoints.web.address=:80" # Define entrypoint for web traffic
       - "--entrypoints.dashboard.address=:8080" # Define entrypoint for dashboard
-      - "--entrypoints.dashboard.address=:8989" # Define entrypoint for dashboard
       - "--api.dashboard=true" # Enable the dashboard explicitly on its entrypoint
-      # - "--log.level=DEBUG" # Uncomment for more detailed Traefik logs
+      - "--log.level=DEBUG" # Uncomment for more detailed Traefik logs
       - "--accesslog=true" # Enable access logs
     ports:
       - "80:80"       # Map host port 80 to Traefik's web entrypoint
