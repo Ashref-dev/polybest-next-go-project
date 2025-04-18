@@ -56,13 +56,13 @@ This plan outlines the steps to create a distributed system featuring REST, Grap
 
 ## Phase 3: API Gateway (Traefik)
 
-- [ ] **Task 3.1: Create Traefik Configuration (`gateway/traefik.yml`)**
+- [x] **Task 3.1: Create Traefik Configuration (`gateway/traefik.yml`)**
     - Define entrypoints (e.g., `web` on port 80).
     - Enable the Docker provider.
     - Enable the Traefik dashboard (optional but helpful).
-- [ ] **Task 3.2: Create Dynamic Configuration File (`gateway/dynamic_conf.yml`)** (Optional, can also use Docker labels)
+- [x] **Task 3.2: Create Dynamic Configuration File (`gateway/dynamic_conf.yml`)** (Optional, can also use Docker labels)
     - Define routers and services if not using Docker labels for discovery.
-- [ ] **Task 3.3: Prepare Traefik Service for Docker Compose**
+- [x] **Task 3.3: Prepare Traefik Service for Docker Compose**
     - Define the Traefik service in the upcoming `docker-compose.yml`.
     - Mount configuration files (`traefik.yml`, `dynamic_conf.yml`) as volumes.
     - Mount the Docker socket (`/var/run/docker.sock`) for service discovery.
