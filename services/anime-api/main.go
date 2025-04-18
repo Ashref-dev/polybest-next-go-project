@@ -61,6 +61,7 @@ var rootQuery = graphql.NewObject(
 				Type: graphql.NewList(animeType),
 				Description: "Get all anime",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					log.Println("Resolving animeList query")
 					return animeList, nil
 				},
 			},
@@ -74,6 +75,7 @@ var rootQuery = graphql.NewObject(
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					id, ok := params.Args["id"].(int)
+					log.Printf("Resolving anime query for ID: %v (exists: %t)", params.Args["id"], ok)
 					if ok {
 						for _, anime := range animeList {
 							if anime.ID == id {
@@ -81,6 +83,7 @@ var rootQuery = graphql.NewObject(
 							}
 						}
 					}
+					log.Printf("Anime with ID %d not found", id)
 					return nil, fmt.Errorf("anime with id %d not found", id)
 				},
 			},
@@ -108,6 +111,7 @@ var rootMutation = graphql.NewObject(
 					},
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+					log.Printf("Resolving addAnime mutation with args: %v", params.Args)
 					title, _ := params.Args["title"].(string)
 					genre, _ := params.Args["genre"].(string)
 					episodes, _ := params.Args["episodes"].(int)
@@ -120,6 +124,7 @@ var rootMutation = graphql.NewObject(
 					}
 					animeList = append(animeList, newAnime)
 					nextAnimeID++ // Increment ID for the next addition
+					log.Printf("Added new anime: %+v", newAnime)
 					return newAnime, nil
 				},
 			},
@@ -142,6 +147,7 @@ func executeQuery(query string, schema graphql.Schema) *graphql.Result {
 	})
 	if len(result.Errors) > 0 {
 		fmt.Printf("errors: %v", result.Errors)
+		log.Printf("GraphQL errors encountered: %v", result.Errors)
 	}
 	return result
 }
@@ -155,7 +161,11 @@ func main() {
 	})
 
 	// Assign handler to the /graphql endpoint
-	http.Handle("/graphql", h)
+	// Wrap the handler to add logging
+	http.Handle("/graphql", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Received request for %s from %s", r.URL.Path, r.RemoteAddr)
+		h.ServeHTTP(w, r)
+	}))
 
 	// Basic health check endpoint
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -164,6 +174,7 @@ func main() {
 
 	port := "8082"
 	fmt.Printf("Anime GraphQL API starting on port %s... Access GraphiQL at http://localhost:%s/graphql\n", port, port)
+	log.Printf("Anime GraphQL API starting on port %s... Access GraphiQL at http://localhost:%s/graphql", port, port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}

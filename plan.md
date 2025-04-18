@@ -15,20 +15,20 @@ This plan outlines the steps to create a distributed system featuring REST, Grap
     - `cd services/series-api && go mod init github.com/your-username/series-api` (Replace with your actual module path)
     - `cd ../anime-api && go mod init github.com/your-username/anime-api`
     - `cd ../movies-api && go mod init github.com/your-username/movies-api`
-- [ ] **Task 1.3: Implement Series API (REST)**
+- [x] **Task 1.3: Implement Series API (REST)**
     - Choose a Go web framework (e.g., Gin, Echo, or standard library `net/http`).
     - Define data models (`structs`) for Series.
     - Implement basic CRUD endpoints (GET `/series`, GET `/series/{id}`, POST `/series`).
     - Use an in-memory map or slice for initial data storage.
     - Add basic logging.
-- [ ] **Task 1.4: Implement Anime API (GraphQL)**
+- [x] **Task 1.4: Implement Anime API (GraphQL)**
     - Choose a Go GraphQL library (e.g., `graphql-go/graphql` or `gqlgen`).
     - Define GraphQL schema (`.graphql` file) for Anime types, queries, and mutations.
     - Implement resolvers for the defined schema.
     - Set up the GraphQL HTTP handler.
     - Use an in-memory map or slice for initial data storage.
     - Add basic logging.
-- [ ] **Task 1.5: Implement Movies API (SOAP)**
+- [x] **Task 1.5: Implement Movies API (SOAP)**
     - Research and choose a Go SOAP library (e.g., `hooklift/gowsdl` for client generation if consuming, or a library for serving, or implement basic XML handling manually).
     - Define the service operations (e.g., `GetMovieDetails`, `ListMovies`).
     - Implement the SOAP service logic.
