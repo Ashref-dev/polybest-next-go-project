@@ -39,18 +39,18 @@ This plan outlines the steps to create a distributed system featuring REST, Grap
 
 ## Phase 2: Dockerization
 
-- [ ] **Task 2.1: Create Dockerfile for Series API**
+- [x] **Task 2.1: Create Dockerfile for Series API**
     - Use a multi-stage build (builder + final image).
     - Copy source code, download dependencies, build the Go binary.
     - Create a minimal final image (e.g., based on `alpine` or `distroless`).
     - Expose the API port.
     - Set the entrypoint/command.
-- [ ] **Task 2.2: Create Dockerfile for Anime API**
+- [x] **Task 2.2: Create Dockerfile for Anime API**
     - Similar multi-stage build process as the Series API.
     - Ensure GraphQL schema files are included if needed.
-- [ ] **Task 2.3: Create Dockerfile for Movies API**
+- [x] **Task 2.3: Create Dockerfile for Movies API**
     - Similar multi-stage build process as the other APIs.
-- [ ] **Task 2.4: Build & Test Docker Images**
+- [x] **Task 2.4: Build & Test Docker Images**
     - Run `docker build` for each service.
     - Run containers individually (`docker run`) to verify they start correctly.
 

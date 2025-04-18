@@ -1,0 +1,29 @@
+# traefik.yml (Static Configuration)
+
+# Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+log:
+  level: DEBUG
+  # You can also specify filePath: "/path/to/traefik.log"
+
+# API and Dashboard configuration
+api:
+  dashboard: true # Enable the dashboard
+  insecure: true  # WARNING: Only for development/testing. Use auth in production.
+
+# EntryPoints configuration
+entryPoints:
+  web:
+    address: ":80" # Entry point for general web traffic
+  dashboard: # Optional separate entry point for the dashboard
+    address: ":8080"
+
+# Providers configuration
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock" # Path to the Docker socket
+    exposedByDefault: false # Prevent exposing all containers by default
+    # network: webnet # Specify the network Docker Compose will create (optional here, define in docker-compose)
+
+# Access Logs (Optional but recommended)
+accessLog: {} # Enable access logs with default settings
+# You can specify filePath: "/path/to/access.log" and format: "json" or "common"
