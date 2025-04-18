@@ -1,0 +1,98 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  # --- API Gateway ---
+  gateway:
+    image: traefik:v2.11 
+    container_name: traefik_gateway
+    command:
+      - "--api.insecure=true" # Enable insecure API & Dashboard (for dev only!)
+      - "--providers.docker=true" # Enable Docker provider
+      - "--providers.docker.exposedbydefault=false" # Don't expose containers unless labeled
+      - "--entrypoints.web.address=:80" # Define entrypoint for web traffic
+      - "--entrypoints.dashboard.address=:8080" # Define entrypoint for dashboard
+      - "--entrypoints.dashboard.address=:8989" # Define entrypoint for dashboard
+      - "--api.dashboard=true" # Enable the dashboard explicitly on its entrypoint
+      # - "--log.level=DEBUG" # Uncomment for more detailed Traefik logs
+      - "--accesslog=true" # Enable access logs
+    ports:
+      - "80:80"       # Map host port 80 to Traefik's web entrypoint
+      - "8080:8080"   # Map host port 8080 to Traefik's dashboard entrypoint
+      - "8989:8989"   # Map host port 8989 to Traefik's dashboard entrypoint
+    volumes:
+      # Mount Docker socket to allow Traefik to detect containers
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Optional: Mount static config if needed, but commands cover basic setup
+      # - ./gateway/traefik.yml:/etc/traefik/traefik.yml:ro
+    networks:
+      - webnet
+
+  # --- Backend Services ---
+  series-api:
+    build:
+      context: ./services/series-api
+    container_name: series_api
+    networks:
+      - webnet
+    labels:
+      - "traefik.enable=true"
+      # Router definition: Listen on 'web' entrypoint for requests to Host(`localhost`) and path starting with /api/series
+      - "traefik.http.routers.series-api.rule=Host(`localhost`) && PathPrefix(`/api/series`)"
+      - "traefik.http.routers.series-api.entrypoints=web"
+      # Service definition: Forward matching requests to this container on port 8081
+      - "traefik.http.services.series-api.loadbalancer.server.port=8081"
+      # Specify the Docker network Traefik should use for this service
+      - "traefik.docker.network=webnet"
+
+  anime-api:
+    build:
+      context: ./services/anime-api
+    container_name: anime_api
+    networks:
+      - webnet
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.anime-api.rule=Host(`localhost`) && PathPrefix(`/api/anime`)"
+      - "traefik.http.routers.anime-api.entrypoints=web"
+      - "traefik.http.services.anime-api.loadbalancer.server.port=8082"
+      - "traefik.docker.network=webnet"
+
+  movies-api:
+    build:
+      context: ./services/movies-api
+    container_name: movies_api
+    networks:
+      - webnet
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.movies-api.rule=Host(`localhost`) && PathPrefix(`/api/movies`)"
+      - "traefik.http.routers.movies-api.entrypoints=web"
+      - "traefik.http.services.movies-api.loadbalancer.server.port=8083"
+      - "traefik.docker.network=webnet"
+
+  # --- Frontend Service ---
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend_app
+    networks:
+      - webnet
+    depends_on: # Optional: wait for APIs (doesn't guarantee they are *ready*, just started)
+      - series-api
+      - anime-api
+      - movies-api
+    labels:
+      - "traefik.enable=true"
+      # Router definition: Catches remaining requests to Host(`localhost`)
+      - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      # Service definition: Forward to the Nginx server running in the container on port 80
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.docker.network=webnet"
+
+# --- Network Configuration ---
+networks:
+  webnet:
+    driver: bridge # Default network driver 

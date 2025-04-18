@@ -11,9 +11,9 @@ import (
 
 // Anime struct definition
 type Anime struct {
-	ID      int    `json:"id"`
-	Title   string `json:"title"`
-	Genre   string `json:"genre"`
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	Genre    string `json:"genre"`
 	Episodes int    `json:"episodes"`
 }
 
@@ -56,7 +56,7 @@ var rootQuery = graphql.NewObject(
 		Name: "RootQuery",
 		Fields: graphql.Fields{
 			"animeList": &graphql.Field{
-				Type: graphql.NewList(animeType),
+				Type:        graphql.NewList(animeType),
 				Description: "Get all anime",
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 					log.Println("Resolving animeList query")
@@ -64,7 +64,7 @@ var rootQuery = graphql.NewObject(
 				},
 			},
 			"anime": &graphql.Field{
-				Type: animeType,
+				Type:        animeType,
 				Description: "Get anime by ID",
 				Args: graphql.FieldConfigArgument{
 					"id": &graphql.ArgumentConfig{
@@ -115,9 +115,9 @@ var rootMutation = graphql.NewObject(
 					episodes, _ := params.Args["episodes"].(int)
 
 					newAnime := Anime{
-						ID:      nextAnimeID,
-						Title:   title,
-						Genre:   genre,
+						ID:       nextAnimeID,
+						Title:    title,
+						Genre:    genre,
 						Episodes: episodes,
 					}
 					animeList = append(animeList, newAnime)
@@ -160,7 +160,7 @@ func main() {
 
 	// Assign handler to the /graphql endpoint
 	// Wrap the handler to add logging
-	http.Handle("/graphql", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/api/anime/graphql", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Received request for %s from %s", r.URL.Path, r.RemoteAddr)
 		h.ServeHTTP(w, r)
 	}))
@@ -176,4 +176,4 @@ func main() {
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
-} 
+}

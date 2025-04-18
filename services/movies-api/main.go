@@ -73,9 +73,9 @@ type GetMovieDetailsResponse struct {
 // --- SOAP Fault (Error) Structure ---
 
 type SoapFault struct {
-	XMLName   xml.Name `xml:"soapenv:Fault"`
-	FaultCode string   `xml:"faultcode"`
-	FaultString string `xml:"faultstring"`
+	XMLName     xml.Name `xml:"soapenv:Fault"`
+	FaultCode   string   `xml:"faultcode"`
+	FaultString string   `xml:"faultstring"`
 }
 
 // --- Handler ---
@@ -219,6 +219,7 @@ func sendSoapFault(w http.ResponseWriter, faultCode, faultString string) {
 
 func main() {
 	http.HandleFunc("/soap", soapHandler)
+	http.HandleFunc("/api/movies/soap", soapHandler)
 
 	// Simple root handler for health check / info
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -231,4 +232,4 @@ func main() {
 
 	// Start server
 	log.Fatal(http.ListenAndServe(":"+port, nil))
-} 
+}

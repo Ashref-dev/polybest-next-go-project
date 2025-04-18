@@ -13,11 +13,11 @@ import (
 
 // Series struct definition
 type Series struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Genre       string `json:"genre"`
-	TotalEpisodes int    `json:"totalEpisodes"`
-	WatchedEpisodes int `json:"watchedEpisodes"` // Example additional field
+	ID              int    `json:"id"`
+	Title           string `json:"title"`
+	Genre           string `json:"genre"`
+	TotalEpisodes   int    `json:"totalEpisodes"`
+	WatchedEpisodes int    `json:"watchedEpisodes"` // Example additional field
 }
 
 // In-memory data store (using a map for easier ID lookup)
@@ -28,7 +28,7 @@ var storeMutex = &sync.RWMutex{} // Mutex to handle concurrent access
 // Initialize with some sample data
 func init() {
 	seriesStore[1] = Series{ID: 1, Title: "Breaking Bad", Genre: "Crime Drama", TotalEpisodes: 62, WatchedEpisodes: 62}
-	seriesStore[2] = Series{ID: 2, Title: "Stranger Things", Genre: "Sci-Fi Horror", TotalEpisodes: 34, WatchedEpisodes: 25} 
+	seriesStore[2] = Series{ID: 2, Title: "Stranger Things", Genre: "Sci-Fi Horror", TotalEpisodes: 34, WatchedEpisodes: 25}
 }
 
 // --- Handler Functions ---
@@ -118,7 +118,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// Define routes
-	apiRouter := r.PathPrefix("/series").Subrouter() // Base path for series API
+	apiRouter := r.PathPrefix("/api/series").Subrouter() // Base path for series API
 	apiRouter.HandleFunc("", getSeriesHandler).Methods("GET")
 	apiRouter.HandleFunc("", createSeriesHandler).Methods("POST")
 	apiRouter.HandleFunc("/{id:[0-9]+}", getSeriesByIDHandler).Methods("GET")
@@ -134,4 +134,4 @@ func main() {
 
 	// Start server
 	log.Fatal(http.ListenAndServe(":"+port, r))
-} 
+}

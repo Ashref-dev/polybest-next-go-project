@@ -69,20 +69,20 @@ This plan outlines the steps to create a distributed system featuring REST, Grap
 
 ## Phase 4: Frontend Development (React)
 
-- [ ] **Task 4.1: Set up React Project**
+- [x] **Task 4.1: Set up React Project**
     - Use `create-react-app` or Vite: `cd frontend && npx create-react-app .` or `npm create vite@latest . -- --template react`.
     - Install necessary libraries (e.g., `axios` for REST/SOAP, Apollo Client or `graphql-request` for GraphQL).
-- [ ] **Task 4.2: Create Basic UI Components**
+- [x] **Task 4.2: Create Basic UI Components**
     - Components for listing Series, Anime, Movies.
     - Component for showing details.
     - Basic navigation/layout.
-- [ ] **Task 4.3: Implement API Calls**
+- [x] **Task 4.3: Implement API Calls**
     - Fetch data from `/api/series` (REST).
     - Fetch data from `/api/anime` (GraphQL).
     - Fetch data from `/api/movies` (SOAP - may require specific handling or a backend-for-frontend proxy endpoint if direct browser SOAP calls are difficult).
-- [ ] **Task 4.4: Display Data in UI**
+- [x] **Task 4.4: Display Data in UI**
     - Integrate fetched data into the React components.
-- [ ] **Task 4.5: Create Dockerfile for React App**
+- [x] **Task 4.5: Create Dockerfile for React App**
     - Use a multi-stage build.
     - Stage 1: Build the React app (`npm run build`).
     - Stage 2: Use an Nginx image to serve the static build files.
