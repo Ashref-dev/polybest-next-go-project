@@ -168,6 +168,9 @@ export function MediaGrid({
                       type={mediaTypeSingular as "movie" | "series" | "anime"}
                       imageSrc={imageSrc}
                       additionalInfo={additionalInfo}
+                      description={
+                        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. lorem ipsum again but this time it's a bit longer and more random text to see how it looks for aesthetic purposes."
+                      }
                     />
                   </motion.div>
                 );
