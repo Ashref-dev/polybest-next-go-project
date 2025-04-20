@@ -37,7 +37,7 @@ export function MediaCard({
   const IconComponent = type === "movie" ? StarIcon : type === "series" ? TvIcon : EyeIcon;
 
   return (
-    <Drawer side="right">
+    <Drawer>
       <div className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 shadow-md transition-shadow duration-300 hover:shadow-xl">
         <Link href={detailUrl} className="block w-full">
           <div className="relative w-full aspect-[16/12]">
