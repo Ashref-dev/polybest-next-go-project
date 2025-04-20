@@ -13,22 +13,26 @@ import (
 
 // Movie struct definition
 type Movie struct {
-	XMLName xml.Name `xml:"Movie"` // Used for XML marshalling
-	ID      int      `xml:"ID"`
-	Title   string   `xml:"Title"`
-	Genre   string   `xml:"Genre"`
-	Year    int      `xml:"Year"`
+	XMLName  xml.Name `xml:"Movie"` // Used for XML marshalling
+	ID       int      `xml:"ID"`
+	Title    string   `xml:"Title"`
+	Genre    string   `xml:"Genre"`
+	Year     int      `xml:"Year"`
+	CoverURL string   `xml:"CoverURL"`
+	WatchURL string   `xml:"WatchURL"`
 }
 
 // In-memory data store
 var movieStore = make(map[int]Movie)
-var nextMovieID = 3
+
 var storeMutex = &sync.RWMutex{}
 
 // Initialize with sample data
 func init() {
-	movieStore[1] = Movie{ID: 1, Title: "Inception", Genre: "Sci-Fi Action", Year: 2010}
-	movieStore[2] = Movie{ID: 2, Title: "The Dark Knight", Genre: "Action Thriller", Year: 2008}
+	movieStore[1] = Movie{ID: 1, Title: "A Bronx Tale", Genre: "Drama", Year: 1993, CoverURL: "https://www.browardcenter.org/assets/img/edp_BronxTale_2122_955x500-f30235f38f.jpg",
+		WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"}
+	movieStore[2] = Movie{ID: 2, Title: "The Green Book", Genre: "Drama", Year: 2018, CoverURL: "https://i.ytimg.com/vi/QkZxoko_HC0/maxresdefault.jpg",
+		WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"}
 }
 
 // --- Simplified SOAP Structure Definitions ---

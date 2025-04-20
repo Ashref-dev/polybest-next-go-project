@@ -9,12 +9,21 @@ import (
 	"github.com/graphql-go/handler"
 )
 
-// Anime struct definition
-type Anime struct {
+// AnimeEpisode struct definition
+type AnimeEpisode struct {
 	ID       int    `json:"id"`
 	Title    string `json:"title"`
-	Genre    string `json:"genre"`
-	Episodes int    `json:"episodes"`
+	WatchURL string `json:"watchUrl"`
+}
+
+// Anime struct definition
+type Anime struct {
+	ID          int            `json:"id"`
+	Title       string         `json:"title"`
+	Genre       string         `json:"genre"`
+	Episodes    int            `json:"episodes"` // Total number of episodes
+	CoverURL    string         `json:"coverUrl"`
+	EpisodeList []AnimeEpisode `json:"episodeList"` // List of actual episodes
 }
 
 // In-memory data store
@@ -24,10 +33,40 @@ var nextAnimeID = 3
 // Initialize with some sample data
 func init() {
 	animeList = []Anime{
-		{ID: 1, Title: "Attack on Titan", Genre: "Action, Dark Fantasy", Episodes: 88},
-		{ID: 2, Title: "Demon Slayer", Genre: "Adventure, Dark Fantasy", Episodes: 55},
+		{ID: 1, Title: "Death Note", Genre: "Action, Dark Fantasy", Episodes: 88,
+			CoverURL: "https://images2.alphacoders.com/153/thumb-1920-153272.jpg",
+			EpisodeList: []AnimeEpisode{
+				{ID: 1, Title: "To You, in 2000 Years: The Fall of Shiganshina, Part 1", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"},
+				{ID: 2, Title: "That Day: The Fall of Shiganshina, Part 2", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"},
+			},
+		},
+		{ID: 2, Title: "Demon Slayer", Genre: "Adventure, Dark Fantasy", Episodes: 55,
+			CoverURL: "https://images.squarespace-cdn.com/content/v1/54fc8146e4b02a22841f4df7/1613993182428-R5SIXOIEUZ5FP6XTU9XE/Cover.png",
+			EpisodeList: []AnimeEpisode{
+				{ID: 1, Title: "Cruelty", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"},
+				{ID: 2, Title: "Trainer Sakonji Urokodaki", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"},
+			},
+		},
 	}
 }
+
+// GraphQL AnimeEpisode Type
+var animeEpisodeType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "AnimeEpisode",
+		Fields: graphql.Fields{
+			"id": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.Int),
+			},
+			"title": &graphql.Field{
+				Type: graphql.String,
+			},
+			"watchUrl": &graphql.Field{
+				Type: graphql.String,
+			},
+		},
+	},
+)
 
 // GraphQL Anime Type
 var animeType = graphql.NewObject(
@@ -43,8 +82,15 @@ var animeType = graphql.NewObject(
 			"genre": &graphql.Field{
 				Type: graphql.String,
 			},
-			"episodes": &graphql.Field{
+			"episodes": &graphql.Field{ // Total episode count
 				Type: graphql.Int,
+			},
+			"coverUrl": &graphql.Field{ // New field
+				Type: graphql.String,
+			},
+			"episodeList": &graphql.Field{ // New field
+				Type:        graphql.NewList(animeEpisodeType),
+				Description: "List of episodes for the anime",
 			},
 		},
 	},
@@ -107,18 +153,24 @@ var rootMutation = graphql.NewObject(
 					"episodes": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.Int),
 					},
+					"coverUrl": &graphql.ArgumentConfig{ // New argument
+						Type: graphql.String,
+					},
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					log.Printf("Resolving addAnime mutation with args: %v", params.Args)
 					title, _ := params.Args["title"].(string)
 					genre, _ := params.Args["genre"].(string)
 					episodes, _ := params.Args["episodes"].(int)
+					coverUrl, _ := params.Args["coverUrl"].(string) // Get new argument
 
 					newAnime := Anime{
-						ID:       nextAnimeID,
-						Title:    title,
-						Genre:    genre,
-						Episodes: episodes,
+						ID:          nextAnimeID,
+						Title:       title,
+						Genre:       genre,
+						Episodes:    episodes,
+						CoverURL:    coverUrl,         // Assign new field
+						EpisodeList: []AnimeEpisode{}, // Initialize with empty list
 					}
 					animeList = append(animeList, newAnime)
 					nextAnimeID++ // Increment ID for the next addition

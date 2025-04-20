@@ -94,8 +94,8 @@ services:
       # Router definition: Catches remaining requests to Host(`localhost`)
       - "traefik.http.routers.frontend.rule=Host(`localhost`)"
       - "traefik.http.routers.frontend.entrypoints=web"
-      # Service definition: Forward to the Nginx server running in the container on port 80
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      # Service definition: Forward to the Next.js server running in the container on port 3000
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
       - "traefik.docker.network=webnet"
 
 # --- Network Configuration ---

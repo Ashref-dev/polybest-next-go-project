@@ -10,16 +10,31 @@ This document outlines the available API endpoints for the different services.
 
 **Base Path:** `/api/series`
 
-**Data Model:**
-```json
-{
-  "id": 0,                // integer, read-only
-  "title": "string",        // string, required on create
-  "genre": "string",        // string
-  "totalEpisodes": 0,   // integer
-  "watchedEpisodes": 0  // integer
-}
-```
+**Data Models:**
+
+*   **`Episode`**
+    ```json
+    {
+      "id": 0,         // integer
+      "title": "string", // string
+      "watchUrl": "string" // string (URL to watch the episode)
+    }
+    ```
+
+*   **`Series`**
+    ```json
+    {
+      "id": 0,                // integer, read-only
+      "title": "string",        // string, required on create
+      "genre": "string",        // string
+      "totalEpisodes": 0,   // integer
+      "watchedEpisodes": 0, // integer
+      "coverUrl": "string",     // string (URL to cover image)
+      "episodes": [          // array of Episode objects
+        // ... see Episode model above ...
+      ]
+    }
+    ```
 
 **Endpoints:**
 
@@ -34,14 +49,24 @@ This document outlines the available API endpoints for the different services.
             "title": "Breaking Bad",
             "genre": "Crime Drama",
             "totalEpisodes": 62,
-            "watchedEpisodes": 62
+            "watchedEpisodes": 62,
+            "coverUrl": "https://example.com/covers/breaking_bad.jpg",
+            "episodes": [
+              { "id": 1, "title": "Pilot", "watchUrl": "https://example.com/watch/bb/s01e01" },
+              { "id": 2, "title": "Cat's in the Bag...", "watchUrl": "https://example.com/watch/bb/s01e02" }
+            ]
           },
           {
             "id": 2,
             "title": "Stranger Things",
             "genre": "Sci-Fi Horror",
             "totalEpisodes": 34,
-            "watchedEpisodes": 25
+            "watchedEpisodes": 25,
+            "coverUrl": "https://example.com/covers/stranger_things.jpg",
+            "episodes": [
+              { "id": 1, "title": "Chapter One: The Vanishing of Will Byers", "watchUrl": "https://example.com/watch/st/s01e01" },
+              { "id": 2, "title": "Chapter Two: The Weirdo on Maple Street", "watchUrl": "https://example.com/watch/st/s01e02" }
+            ]
           }
         ]
         ```
@@ -60,13 +85,19 @@ This document outlines the available API endpoints for the different services.
           "title": "Breaking Bad",
           "genre": "Crime Drama",
           "totalEpisodes": 62,
-          "watchedEpisodes": 62
+          "watchedEpisodes": 62,
+          "coverUrl": "https://example.com/covers/breaking_bad.jpg",
+          "episodes": [
+            { "id": 1, "title": "Pilot", "watchUrl": "https://example.com/watch/bb/s01e01" },
+            { "id": 2, "title": "Cat's in the Bag...", "watchUrl": "https://example.com/watch/bb/s01e02" }
+            // ... potentially more episodes
+          ]
         }
         ```
 
 *   **`POST /api/series`**
     *   Description: Creates a new series.
-    *   Request Body: JSON object representing the new series (ID is ignored, `title` is required).
+    *   Request Body: JSON object representing the new series (ID is ignored, `title` is required). `coverUrl` and `episodes` are optional.
     *   Response:
         *   `201 Created`: JSON object of the newly created series (including its assigned ID).
         *   `400 Bad Request`: If the request body is invalid or `title` is missing.
@@ -76,7 +107,9 @@ This document outlines the available API endpoints for the different services.
           "title": "The Mandalorian",
           "genre": "Sci-Fi Western",
           "totalEpisodes": 24,
-          "watchedEpisodes": 16
+          "watchedEpisodes": 16,
+          "coverUrl": "https://example.com/covers/mandalorian.jpg",
+          "episodes": [] // Can provide episodes or omit
         }
         ```
     *   Example Response:
@@ -86,7 +119,9 @@ This document outlines the available API endpoints for the different services.
           "title": "The Mandalorian",
           "genre": "Sci-Fi Western",
           "totalEpisodes": 24,
-          "watchedEpisodes": 16
+          "watchedEpisodes": 16,
+          "coverUrl": "https://example.com/covers/mandalorian.jpg",
+          "episodes": []
         }
         ```
 
@@ -98,33 +133,46 @@ This document outlines the available API endpoints for the different services.
 
 **Schema Overview:**
 
+*   **Type `AnimeEpisode`:**
+    *   `id: Int!`
+    *   `title: String`
+    *   `watchUrl: String`
+
 *   **Type `Anime`:**
     *   `id: Int!`
     *   `title: String`
     *   `genre: String`
-    *   `episodes: Int`
+    *   `episodes: Int` (Total number of episodes)
+    *   `coverUrl: String`
+    *   `episodeList: [AnimeEpisode]` (List of actual episodes)
 
 *   **Query:**
     *   `animeList: [Anime]` - Fetches all anime.
     *   `anime(id: Int!): Anime` - Fetches a single anime by ID.
 
 *   **Mutation:**
-    *   `addAnime(title: String!, genre: String!, episodes: Int!): Anime` - Adds a new anime.
+    *   `addAnime(title: String!, genre: String!, episodes: Int!, coverUrl: String): Anime` - Adds a new anime.
 
 **Example Queries/Mutations:**
 
-*   **Get All Anime:**
+*   **Get All Anime (with episodes):**
     ```graphql
     query {
       animeList {
         id
         title
         genre
+        coverUrl
+        episodeList {
+          id
+          title
+          watchUrl
+        }
       }
     }
     ```
 
-*   **Get Anime by ID:**
+*   **Get Anime by ID (with episodes):**
     ```graphql
     query {
       anime(id: 1) {
@@ -132,6 +180,12 @@ This document outlines the available API endpoints for the different services.
         title
         genre
         episodes
+        coverUrl
+        episodeList {
+          id
+          title
+          watchUrl
+        }
       }
     }
     ```
@@ -139,9 +193,11 @@ This document outlines the available API endpoints for the different services.
 *   **Add Anime:**
     ```graphql
     mutation {
-      addAnime(title: "Jujutsu Kaisen", genre: "Supernatural Action", episodes: 47) {
+      addAnime(title: "Jujutsu Kaisen", genre: "Supernatural Action", episodes: 47, coverUrl: "https://example.com/covers/jjk.jpg") {
         id
         title
+        coverUrl
+        episodeList # Will be empty initially
       }
     }
     ```
@@ -159,6 +215,8 @@ This document outlines the available API endpoints for the different services.
   <Title>string</Title>
   <Genre>string</Genre>
   <Year>int</Year>
+  <CoverURL>string</CoverURL> <!-- URL to cover image -->
+  <WatchURL>string</WatchURL> <!-- URL to watch the movie -->
 </Movie>
 ```
 
@@ -188,12 +246,16 @@ This document outlines the available API endpoints for the different services.
                        <Title>Inception</Title>
                        <Genre>Sci-Fi Action</Genre>
                        <Year>2010</Year>
+                       <CoverURL>https://example.com/covers/inception.jpg</CoverURL>
+                       <WatchURL>https://example.com/watch/inception</WatchURL>
                     </Movie>
                     <Movie>
                        <ID>2</ID>
                        <Title>The Dark Knight</Title>
                        <Genre>Action Thriller</Genre>
                        <Year>2008</Year>
+                       <CoverURL>https://example.com/covers/dark_knight.jpg</CoverURL>
+                       <WatchURL>https://example.com/watch/dark_knight</WatchURL>
                     </Movie>
                     <!-- More movies... -->
                  </Movies>
@@ -227,6 +289,8 @@ This document outlines the available API endpoints for the different services.
                     <Title>Inception</Title>
                     <Genre>Sci-Fi Action</Genre>
                     <Year>2010</Year>
+                    <CoverURL>https://example.com/covers/inception.jpg</CoverURL>
+                    <WatchURL>https://example.com/watch/inception</WatchURL>
                  </Movie>
               </mov:GetMovieDetailsResponse>
            </soapenv:Body>

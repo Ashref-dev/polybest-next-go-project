@@ -11,13 +11,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Episode struct definition
+type Episode struct {
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	WatchURL string `json:"watchUrl"`
+}
+
 // Series struct definition
 type Series struct {
-	ID              int    `json:"id"`
-	Title           string `json:"title"`
-	Genre           string `json:"genre"`
-	TotalEpisodes   int    `json:"totalEpisodes"`
-	WatchedEpisodes int    `json:"watchedEpisodes"` // Example additional field
+	ID              int       `json:"id"`
+	Title           string    `json:"title"`
+	Genre           string    `json:"genre"`
+	TotalEpisodes   int       `json:"totalEpisodes"`
+	WatchedEpisodes int       `json:"watchedEpisodes"` // Example additional field
+	CoverURL        string    `json:"coverUrl"`        // New field
+	Episodes        []Episode `json:"episodes"`        // New field
 }
 
 // In-memory data store (using a map for easier ID lookup)
@@ -27,8 +36,37 @@ var storeMutex = &sync.RWMutex{} // Mutex to handle concurrent access
 
 // Initialize with some sample data
 func init() {
-	seriesStore[1] = Series{ID: 1, Title: "Breaking Bad", Genre: "Crime Drama", TotalEpisodes: 62, WatchedEpisodes: 62}
-	seriesStore[2] = Series{ID: 2, Title: "Stranger Things", Genre: "Sci-Fi Horror", TotalEpisodes: 34, WatchedEpisodes: 25}
+	seriesStore[1] = Series{
+		ID:              1,
+		Title:           "Breaking Bad",
+		Genre:           "Crime Drama",
+		TotalEpisodes:   62,
+		WatchedEpisodes: 0,
+		CoverURL:        "https://www.bpmcdn.com/f/files/kelowna/import/2022-06/29555137_web1_220630-KCN-Breaking-Bad-_1.jpg",
+		Episodes: []Episode{
+			{ID: 1, Title: "Pilot", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"},
+			{ID: 2, Title: "Cat's in the Bag...", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"},
+			// Add more episodes as needed
+		},
+	}
+	seriesStore[2] = Series{
+		ID:              2,
+		Title:           "Invincible",
+		Genre:           "Action, Adventure, Animation",
+		TotalEpisodes:   10,
+		WatchedEpisodes: 0,
+		CoverURL:        "https://www.vitalthrills.com/wp-content/uploads/2024/12/invincibleccxp1.jpg",
+		Episodes: []Episode{
+			{ID: 1, Title: "Chapter One: The Vanishing of Will Byers", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"},
+			{ID: 2, Title: "Chapter Two: The Weirdo on Maple Street", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP2.ia.mp4"},
+			{ID: 3, Title: "Chapter Three: Invincible", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP3.ia.mp4"},
+			{ID: 4, Title: "Chapter Four: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP4.ia.mp4"},
+			{ID: 5, Title: "Chapter Five: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP5.ia.mp4"},
+			{ID: 6, Title: "Chapter Six: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP6.ia.mp4"},
+			{ID: 7, Title: "Chapter Seven: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP7.ia.mp4"},
+			{ID: 8, Title: "Chapter Eight: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP8.ia.mp4"},
+			{ID: 9, Title: "Chapter Nine: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP9.ia.mp4"},		},
+	}
 }
 
 // --- Handler Functions ---
@@ -97,6 +135,10 @@ func createSeriesHandler(w http.ResponseWriter, r *http.Request) {
 	if newSeries.Title == "" {
 		http.Error(w, "Title is required", http.StatusBadRequest)
 		return
+	}
+	// Add default empty slice for episodes if not provided, prevents null in JSON
+	if newSeries.Episodes == nil {
+		newSeries.Episodes = []Episode{}
 	}
 
 	storeMutex.Lock() // Write lock
