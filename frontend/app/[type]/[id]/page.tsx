@@ -98,14 +98,16 @@ async function MediaDetailContent({ type, id }: { type: string; id: string }) {
       mediaData = await moviesClient.getMovieDetails(parseInt(id));
     } else if (type === "series") {
       mediaData = await seriesClient.getSeriesById(parseInt(id));
-      // Handle empty episodes array for series (instead of 404)
-      if (!mediaData.episodes) {
+      // Log the API response
+      console.log("Fetched series from API:", mediaData);
+      // Ensure episodes is always an array
+      if (mediaData && !Array.isArray(mediaData.episodes)) {
         mediaData.episodes = [];
       }
     } else if (type === "anime") {
       mediaData = await animeClient.getAnimeById(parseInt(id));
-      // Handle empty episodeList array for anime (instead of 404)
-      if (!mediaData.episodeList) {
+      // Handle empty or missing episodeList array for anime (instead of 404)
+      if (mediaData && !Array.isArray(mediaData.episodeList)) {
         mediaData.episodeList = [];
       }
     }
@@ -116,7 +118,9 @@ async function MediaDetailContent({ type, id }: { type: string; id: string }) {
     }
   } catch (err) {
     console.error(`Error fetching ${type} with id ${id}:`, err);
+    
   }
+  console.log("🚀 ~ MediaDetailContent ~ mediaData:", mediaData)
 
   // Render the client component with the fetched data
   return (

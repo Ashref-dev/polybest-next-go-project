@@ -39,6 +39,10 @@ interface MediaDetailClientProps {
 }
 
 export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientProps) {
+  // Debug: Log incoming props
+  console.log('[MediaDetailClient] mediaType:', mediaType);
+  console.log('[MediaDetailClient] mediaData:', mediaData);
+
   const router = useRouter();
   const [activeEpisode, setActiveEpisode] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -50,27 +54,38 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
     // For series, use the episodes from the API
     if (mediaType === "series") {
       const series = mediaData as Series;
-      return series.episodes.map(ep => ({
-        number: ep.id,
-        title: ep.title || `Episode ${ep.id}`,
-        duration: "45:00" // Mock duration since API doesn't provide it
-      }));
+      console.log('[generateEpisodes] series.episodes:', series.episodes);
+      const result = Array.isArray(series.episodes)
+        ? series.episodes.map(ep => ({
+            number: ep.id,
+            title: ep.title || `Episode ${ep.id}`,
+            duration: "45:00" // Mock duration since API doesn't provide it
+          }))
+        : [];
+      console.log('[generateEpisodes] result:', result);
+      return result;
     }
     
     // For anime, use the episodeList from the API
     if (mediaType === "anime") {
       const anime = mediaData as Anime;
-      return anime.episodeList.map(ep => ({
-        number: ep.id,
-        title: ep.title || `Episode ${ep.id}`,
-        duration: "24:00" // Mock duration since API doesn't provide it
-      }));
+      console.log('[generateEpisodes] anime.episodeList:', anime.episodeList);
+      const result = Array.isArray(anime.episodeList)
+        ? anime.episodeList.map(ep => ({
+            number: ep.id,
+            title: ep.title || `Episode ${ep.id}`,
+            duration: "24:00" // Mock duration since API doesn't provide it
+          }))
+        : [];
+      console.log('[generateEpisodes] result:', result);
+      return result;
     }
     
     return [];
   };
   
   const episodes = generateEpisodes(mediaData);
+  console.log('[MediaDetailClient] episodes:', episodes);
   
   // Determine if this is a series with episodes
   const hasEpisodes = mediaType === "series" || mediaType === "anime";
@@ -155,7 +170,7 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
       </div>
 
       {/* Media Player Section - Show placeholder or actual player based on isPlaying state */}
-      <section className="bg-black relative">
+      <section className="bg-black rounded-md relative max-w-7xl mx-auto">
         {isPlaying ? (
           <VideoPlayer 
             coverUrl={getCoverUrl()}

@@ -332,7 +332,7 @@ export default function MediaListPage() {
       </div>
 
       {/* Content Grid with modern spacing */}
-      <div className="py-4">
+      <div className="py-4 max-w-7xl mx-auto">
         <MediaGrid 
           isLoading={isLoading}
           error={error}

@@ -55,17 +55,17 @@ export function MediaGrid({
   };
 
   return (
-    <section className="py-10">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="py-8">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {Array(8)
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {Array(4)
               .fill(0)
               .map((_, index) => (
                 <div key={`skeleton-${index}`} className="space-y-3">
-                  <Skeleton className="h-[380px] w-full rounded-xl" />
-                  <Skeleton className="h-4 w-3/4 rounded-lg" />
-                  <Skeleton className="h-3 w-1/2 rounded-lg" />
+                  <Skeleton className="aspect-[16/9] w-full rounded-xl" />
+                  <Skeleton className="h-5 w-3/4 rounded-lg" />
+                  <Skeleton className="h-4 w-1/2 rounded-lg" />
                 </div>
               ))}
           </div>
@@ -82,7 +82,7 @@ export function MediaGrid({
         ) : items.length > 0 ? (
           <>
             <motion.div
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-8"
               variants={containerVariants}
               initial="hidden"
               animate="visible"

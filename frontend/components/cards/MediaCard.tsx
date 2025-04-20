@@ -1,13 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Card, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { StarIcon, TvIcon, EyeIcon } from "lucide-react";
+import { StarIcon, TvIcon, EyeIcon, InfoIcon } from "lucide-react";
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+} from "@/components/ui/drawer";
 
-interface MediaCardProps {
+export interface ModernMediaCardProps {
   id: number;
   title: string;
-  genre: string;
+  genre?: string;
   type: "movie" | "series" | "anime";
   imageSrc?: string;
   additionalInfo?: {
@@ -21,68 +29,64 @@ export function MediaCard({
   title,
   genre,
   type,
-  imageSrc = "/placeholder-media.jpg", // Default placeholder image
+  imageSrc = "/placeholder-media.jpg",
   additionalInfo,
-}: MediaCardProps) {
-  // Determine the media type for the URL (convert to plural form)
-  const mediaTypeForUrl = type === "movie" ? "movies" : type === "series" ? "series" : "anime";
-  
-  // Build the detail page URL with the new route structure
-  const detailUrl = `/${mediaTypeForUrl}/${id}`;
-  
-  // Generate gradient based on media type for fallback
-  const gradientBg = 
-    type === "movie" 
-      ? "bg-gradient-to-br from-red-500 to-orange-500"
-      : type === "series"
-      ? "bg-gradient-to-br from-blue-500 to-green-500"
-      : "bg-gradient-to-br from-purple-500 to-indigo-500";
+}: ModernMediaCardProps) {
+  const mediaType = type === "movie" ? "movies" : type === "series" ? "series" : "anime";
+  const detailUrl = `/${mediaType}/${id}`;
+  const IconComponent = type === "movie" ? StarIcon : type === "series" ? TvIcon : EyeIcon;
 
-  // Generate icon based on media type
-  const MediaIcon = type === "movie" 
-    ? StarIcon 
-    : type === "series" 
-    ? TvIcon 
-    : EyeIcon;
-  
   return (
-    <Link href={detailUrl} className="block transition-all duration-300 hover:-translate-y-2 hover:shadow-xl group">
-      <Card className="overflow-hidden h-full border border-muted shadow-md bg-background hover:shadow-2xl hover:border-primary/20 transition-all duration-300">
-        <CardHeader className="p-0">
-          <div className="relative aspect-[2/3] w-full overflow-hidden">
-            <div className={`absolute inset-0 ${gradientBg}`}></div>
+    <Drawer side="right">
+      <div className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 shadow-md transition-shadow duration-300 hover:shadow-xl">
+        <Link href={detailUrl} className="block w-full">
+          <div className="relative w-full aspect-[16/12]">
             <Image
-              src={imageSrc}
+              src={imageSrc!}
               alt={title}
               fill
-              className="object-cover transition-all duration-500 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              priority={false}
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/80 to-transparent opacity-80"></div>
-            
-            <Badge className="absolute top-3 right-3 bg-black/70 hover:bg-black/80 backdrop-blur-sm text-xs font-semibold px-2 py-1 gap-1 transition-colors">
-              <MediaIcon size={12} />
-              {type.charAt(0).toUpperCase() + type.slice(1)}
-            </Badge>
-            
-            <div className="absolute bottom-0 left-0 p-4 w-full">
-              <h3 className="font-semibold text-lg text-white line-clamp-2 group-hover:text-primary-foreground transition-colors">{title}</h3>
-              <p className="text-gray-200 text-sm mt-1">{genre}</p>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
+            <div className="absolute bottom-4 left-4 text-white">
+              <h3 className="text-2xl font-semibold leading-tight">{title}</h3>
+              {genre && <p className="mt-1 text-sm opacity-80">{genre}</p>}
+            </div>
+            <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full">
+              <IconComponent size={16} className="text-white" />
             </div>
           </div>
-        </CardHeader>
+        </Link>
         {additionalInfo && (
-          <CardFooter className="px-4 py-3 border-t bg-muted/20">
-            <div className="text-sm w-full flex justify-between items-center">
-              <span className="font-medium">{additionalInfo.label}</span>
-              <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-medium group-hover:bg-primary/20 transition-colors">
-                {additionalInfo.value}
-              </span>
-            </div>
-          </CardFooter>
+          <DrawerTrigger asChild>
+            <button className="absolute top-4 left-4 bg-white/80 dark:bg-black/60 p-2 rounded-full shadow hover:bg-white/90 transition-colors">
+              <InfoIcon className="w-5 h-5 text-gray-800 dark:text-white" />
+            </button>
+          </DrawerTrigger>
         )}
-      </Card>
-    </Link>
+      </div>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>{title}</DrawerTitle>
+          {genre && <DrawerDescription>Genre: {genre}</DrawerDescription>}
+        </DrawerHeader>
+        <div className="p-4">
+          {additionalInfo ? (
+            <div>
+              <p className="text-sm font-medium">{additionalInfo.label}</p>
+              <p className="text-lg font-semibold">{additionalInfo.value}</p>
+            </div>
+          ) : (
+            <p>No additional info available.</p>
+          )}
+        </div>
+        <DrawerFooter className="flex justify-end">
+          <DrawerClose asChild>
+            <button className="text-primary font-medium">Close</button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 } 

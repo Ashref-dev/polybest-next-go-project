@@ -7,14 +7,7 @@ services:
   gateway:
     image: traefik:v2.11 
     container_name: traefik_gateway
-    # command: # Removed to use static config file
-    #   - "--providers.docker=true"
-    #   - "--providers.docker.exposedbydefault=false"
-    #   - "--entrypoints.web.address=:80"
-    #   - "--entrypoints.dashboard.address=:8080"
-    #   - "--api.dashboard=true"
-    #   - "--log.level=DEBUG"
-    #   - "--accesslog=true"
+
     ports:
       - "80:80"       # Map host port 80 to Traefik's web entrypoint
       - "8080:8080"   # Map host port 8080 to Traefik's dashboard entrypoint (container port 8181)
@@ -44,8 +37,9 @@ services:
       - webnet
     labels:
       - "traefik.enable=true"
-      # Router definition: Listen on 'web' entrypoint for requests to Host(`localhost`) and path starting with /api/series
-      - "traefik.http.routers.series-api.rule=Host(`localhost`) && PathPrefix(`/api/series`)"
+      # Router definition: Listen for path starting with /api/series
+      - "traefik.http.routers.series-api.rule=PathPrefix(`/api/series`)"
+      - "traefik.http.routers.series-api.priority=10"
       - "traefik.http.routers.series-api.entrypoints=web"
       # Service definition: Forward matching requests to this container on port 8081
       - "traefik.http.services.series-api.loadbalancer.server.port=8081"
@@ -60,7 +54,8 @@ services:
       - webnet
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.anime-api.rule=Host(`localhost`) && PathPrefix(`/api/anime`)"
+      # Router definition: Listen for path starting with /api/anime
+      - "traefik.http.routers.anime-api.rule=PathPrefix(`/api/anime`)"
       - "traefik.http.routers.anime-api.entrypoints=web"
       - "traefik.http.services.anime-api.loadbalancer.server.port=8082"
       - "traefik.docker.network=webnet"
@@ -73,7 +68,8 @@ services:
       - webnet
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.movies-api.rule=Host(`localhost`) && PathPrefix(`/api/movies`)"
+      # Router definition: Listen for path starting with /api/movies
+      - "traefik.http.routers.movies-api.rule=PathPrefix(`/api/movies`)"
       - "traefik.http.routers.movies-api.entrypoints=web"
       - "traefik.http.services.movies-api.loadbalancer.server.port=8083"
       - "traefik.docker.network=webnet"
@@ -93,6 +89,7 @@ services:
       - "traefik.enable=true"
       # Router definition: Catches remaining requests to Host(`localhost`)
       - "traefik.http.routers.frontend.rule=Host(`localhost`)"
+      - "traefik.http.routers.frontend.priority=1"
       - "traefik.http.routers.frontend.entrypoints=web"
       # Service definition: Forward to the Next.js server running in the container on port 3000
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"

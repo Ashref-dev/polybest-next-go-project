@@ -65,7 +65,7 @@ func init() {
 			{ID: 6, Title: "Chapter Six: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP6.ia.mp4"},
 			{ID: 7, Title: "Chapter Seven: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP7.ia.mp4"},
 			{ID: 8, Title: "Chapter Eight: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP8.ia.mp4"},
-			{ID: 9, Title: "Chapter Nine: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP9.ia.mp4"},		},
+			{ID: 9, Title: "Chapter Nine: The Last Day of School", WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP9.ia.mp4"}},
 	}
 }
 
@@ -73,7 +73,8 @@ func init() {
 
 // getSeriesHandler handles GET /series
 func getSeriesHandler(w http.ResponseWriter, r *http.Request) {
-	storeMutex.RLock() // Read lock
+	log.Printf("Received request path: %s", r.URL.Path) // Log received path
+	storeMutex.RLock()                                  // Read lock
 	defer storeMutex.RUnlock()
 
 	seriesList := make([]Series, 0, len(seriesStore))
@@ -91,6 +92,7 @@ func getSeriesHandler(w http.ResponseWriter, r *http.Request) {
 
 // getSeriesByIDHandler handles GET /series/{id}
 func getSeriesByIDHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Received request path: %s", r.URL.Path) // Log received path
 	vars := mux.Vars(r)
 	idStr, ok := vars["id"]
 	if !ok {
@@ -105,6 +107,9 @@ func getSeriesByIDHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	storeMutex.RLock() // Read lock
+	// Log the current state of the store before lookup
+	log.Printf("Current seriesStore: %+v\n", seriesStore)
+	// Use direct map lookup
 	series, exists := seriesStore[id]
 	storeMutex.RUnlock()
 

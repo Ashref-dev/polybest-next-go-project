@@ -1,6 +1,9 @@
 import { Series, CreateSeriesRequest } from "../types";
 
-const API_BASE_URL = "/api/series";
+const isServer = typeof window === "undefined";
+const API_BASE_URL = isServer
+  ? `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://gateway"}/api/series`
+  : "/api/series";
 
 /**
  * REST client for the Series API
