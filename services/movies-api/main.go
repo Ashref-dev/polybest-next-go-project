@@ -29,10 +29,12 @@ var storeMutex = &sync.RWMutex{}
 
 // Initialize with sample data
 func init() {
-	movieStore[1] = Movie{ID: 1, Title: "A Bronx Tale", Genre: "Drama", Year: 1993, CoverURL: "https://www.browardcenter.org/assets/img/edp_BronxTale_2122_955x500-f30235f38f.jpg",
-		WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"}
-	movieStore[2] = Movie{ID: 2, Title: "The Green Book", Genre: "Drama", Year: 2018, CoverURL: "https://i.ytimg.com/vi/QkZxoko_HC0/maxresdefault.jpg",
-		WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP1.ia.mp4"}
+	movieStore[1] = Movie{ID: 1, Title: "A Bronx Tale", Genre: "Drama", Year: 1993,
+	 CoverURL: "https://www.browardcenter.org/assets/img/edp_BronxTale_2122_955x500-f30235f38f.jpg",
+		WatchURL: "https://ia803103.us.archive.org/32/items/A.Bronx.Tale.1993.720p.BluRay.ENG.x264.HuNTRiNiTY/A.Bronx.Tale.1993.720p.BluRay.ENG.x264.HuN-TRiNiTY.mp4"}
+	movieStore[2] = Movie{ID: 2, Title: "Spirited Away", Genre: "Adventure, Animation, Family", Year: 2001,
+		CoverURL: "https://sysfilessacbe149174fee.blob.core.windows.net/public-container/clients/worthingtheatres/files/e990fc99-41ef-4a4d-ab89-170b390ebb9c.jpg",
+		WatchURL: "https://dn721609.ca.archive.org/0/items/ag_spirited-away/%5Banimegrimoire%5D%20Spirited%20Away%20%5BBD720p%5D%5BF295CDAB%5D.mp4"}
 }
 
 // --- Simplified SOAP Structure Definitions ---
