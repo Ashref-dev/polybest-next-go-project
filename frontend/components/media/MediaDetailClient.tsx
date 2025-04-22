@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, PlayCircle, Clock, Calendar, Share2, Plus, Star } from "lucide-react";
@@ -13,10 +13,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -31,6 +31,7 @@ interface Episode {
   number: number;
   title: string;
   duration: string;
+  watchUrl: string;
 }
 
 interface MediaDetailClientProps {
@@ -46,6 +47,7 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
   const router = useRouter();
   const [activeEpisode, setActiveEpisode] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [episodeSearch, setEpisodeSearch] = useState<string>("");
   
   // Mock episode data (in a real app, this would come from the API)
   const generateEpisodes = (mediaData: Movie | Series | Anime): Episode[] => {
@@ -59,7 +61,8 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
         ? series.episodes.map(ep => ({
             number: ep.id,
             title: ep.title || `Episode ${ep.id}`,
-            duration: "45:00" // Mock duration since API doesn't provide it
+            duration: "45:00", // Mock duration since API doesn't provide it
+            watchUrl: ep.watchUrl
           }))
         : [];
       console.log('[generateEpisodes] result:', result);
@@ -74,7 +77,8 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
         ? anime.episodeList.map(ep => ({
             number: ep.id,
             title: ep.title || `Episode ${ep.id}`,
-            duration: "24:00" // Mock duration since API doesn't provide it
+            duration: "24:00", // Mock duration since API doesn't provide it
+            watchUrl: ep.watchUrl
           }))
         : [];
       console.log('[generateEpisodes] result:', result);
@@ -151,6 +155,16 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
     
     return 0;
   };
+
+  // Filter episodes based on search term
+  const filteredEpisodes = useMemo(() => {
+    if (!episodeSearch.trim()) return episodes;
+    
+    return episodes.filter(ep => 
+      ep.title.toLowerCase().includes(episodeSearch.toLowerCase()) || 
+      ep.number.toString().includes(episodeSearch)
+    );
+  }, [episodes, episodeSearch]);
 
   return (
     <div className="min-h-screen pb-16">
@@ -299,45 +313,84 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
                         {episodes.length > 0 ? (
                           <>
                             <div className="p-4 border-b">
-                              <div className="flex justify-between items-center">
+                              <div className="flex justify-between items-center mb-2">
                                 <h3 className="font-medium">Season 1</h3>
                                 <Badge variant="outline">{episodes.length} Episodes</Badge>
                               </div>
+                              <div className="relative">
+                                <input
+                                  type="text"
+                                  placeholder="Search episodes..."
+                                  value={episodeSearch}
+                                  onChange={(e) => setEpisodeSearch(e.target.value)}
+                                  className="w-full px-3 py-2 text-sm rounded-md border border-input bg-transparent placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                                />
+                              </div>
                             </div>
-                            <ScrollArea className="h-[400px]">
+                            <ScrollArea className="h-[500px]">
                               <div className="divide-y">
-                                {episodes.map((episode) => (
-                                  <div 
-                                    key={episode.number}
-                                    onClick={() => {
-                                      setActiveEpisode(episode.number);
-                                      if (!isPlaying) {
-                                        setIsPlaying(true);
-                                      }
-                                    }}
-                                    className={`flex items-center p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
-                                      activeEpisode === episode.number ? "bg-muted/30" : ""
-                                    }`}
-                                  >
-                                    <div className="flex-shrink-0 mr-4 font-semibold text-lg w-6">
-                                      {episode.number}.
-                                    </div>
-                                    <div className="flex-1">
-                                      <h4 className="font-medium">{episode.title}</h4>
-                                      <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                                        <Clock size={14} />
-                                        <span>{episode.duration}</span>
+                                {filteredEpisodes.length > 0 ? (
+                                  filteredEpisodes.map((episode) => (
+                                    <div 
+                                      key={episode.number}
+                                      onClick={() => {
+                                        setActiveEpisode(episode.number);
+                                        if (!isPlaying) {
+                                          setIsPlaying(true);
+                                        }
+                                      }}
+                                      className={`flex items-start p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
+                                        activeEpisode === episode.number ? "bg-muted/30" : ""
+                                      }`}
+                                    >
+                                      <div className="flex-shrink-0 mr-4 font-semibold text-lg w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center text-primary">
+                                        {episode.number}
+                                      </div>
+                                      <div className="flex-shrink-0 mr-4 relative w-24 h-16 overflow-hidden rounded-md">
+                                        <Image 
+                                          src={getCoverUrl()} 
+                                          alt={episode.title}
+                                          fill
+                                          className="object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-black/20 hover:bg-black/0 transition-colors">
+                                          <PlayCircle className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white/70 h-8 w-8" />
+                                        </div>
+                                      </div>
+                                      <div className="flex-1">
+                                        <h4 className="font-medium text-base">{episode.title}</h4>
+                                        <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
+                                          <span className="flex items-center gap-1">
+                                            <Clock size={14} />
+                                            {episode.duration}
+                                          </span>
+                                          <Badge variant="outline" className="px-1.5 py-0 text-xs">HD</Badge>
+                                        </div>
+                                        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                                          {mediaType === "series" && "Watch Mark Grayson as he continues his journey to becoming Invincible and learns the truth about his father."}
+                                          {mediaType === "anime" && "Yuji Itadori encounters powerful curses as he continues his journey at Jujutsu High."}
+                                        </p>
+                                      </div>
+                                      <div className="ml-4 flex-shrink-0">
+                                        {activeEpisode === episode.number ? (
+                                          <Button size="sm" variant="default" className="gap-2">
+                                            <PlayCircle size={16} />
+                                            <span>Now Playing</span>
+                                          </Button>
+                                        ) : (
+                                          <Button size="sm" variant="outline" className="gap-2">
+                                            <PlayCircle size={16} />
+                                            <span>Play</span>
+                                          </Button>
+                                        )}
                                       </div>
                                     </div>
-                                    <div>
-                                      {activeEpisode === episode.number ? (
-                                        <PlayCircle size={24} className="text-primary" />
-                                      ) : (
-                                        <PlayCircle size={24} className="text-muted-foreground opacity-50" />
-                                      )}
-                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="p-8 text-center">
+                                    <p className="text-muted-foreground">No episodes match your search.</p>
                                   </div>
-                                ))}
+                                )}
                               </div>
                             </ScrollArea>
                           </>

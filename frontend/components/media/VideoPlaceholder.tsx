@@ -5,6 +5,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface EpisodeInfo {
+  id: number;
+  watchUrl: string;
   season: number;
   episode: number;
   title: string;

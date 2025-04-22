@@ -10,6 +10,7 @@ interface Episode {
   number: number;
   title: string;
   duration: string;
+  watchUrl: string;
 }
 
 interface VideoPlayerProps {
@@ -44,15 +45,12 @@ export function VideoPlayer({
 
   // Video source - in a real implementation, this would come from your API
   const getVideoSource = () => {
-    switch (mediaType) {
-      case "movies":
-        return "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4";
-      case "series":
-      case "anime":
-        return `https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4?episode=${episode?.number || 1}`;
-      default:
-        return "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4";
+    if (mediaType === "movies") {
+      return "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4";
+    } else if ((mediaType === "series" || mediaType === "anime") && episode?.watchUrl) {
+      return episode.watchUrl;
     }
+    return "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4";
   };
 
   // Handle play/pause
