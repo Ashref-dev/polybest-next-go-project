@@ -1,6 +1,11 @@
 import { Movie, SoapFault } from "../types";
+import { DOMParser as XMLDOMParser } from "xmldom";
 
-const SOAP_ENDPOINT = "/api/movies/soap";
+const isServer = typeof window === "undefined";
+const SOAP_ENDPOINT = isServer
+  ? `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://gateway"}/api/movies/soap`
+  : "/api/movies/soap";
+
 const SOAP_NAMESPACE = "http://example.com/movieservice";
 
 /**
@@ -18,11 +23,17 @@ function createSoapEnvelope(bodyContent: string): string {
 }
 
 /**
- * Parse XML string to DOM
+ * Parse XML string to DOM - works in both browser and server environments
  */
 function parseXML(xmlString: string): Document {
-  const parser = new DOMParser();
-  return parser.parseFromString(xmlString, "text/xml");
+  if (isServer) {
+    // Server-side XML parsing using the xmldom package
+    return new XMLDOMParser().parseFromString(xmlString, "text/xml");
+  } else {
+    // Browser-side XML parsing
+    const parser = new DOMParser();
+    return parser.parseFromString(xmlString, "text/xml");
+  }
 }
 
 /**

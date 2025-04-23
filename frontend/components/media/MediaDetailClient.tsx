@@ -49,7 +49,7 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [episodeSearch, setEpisodeSearch] = useState<string>("");
   
-  // Mock episode data (in a real app, this would come from the API)
+  // Generate episode data - for movies, this will be an empty array
   const generateEpisodes = (mediaData: Movie | Series | Anime): Episode[] => {
     if (mediaType === "movies") return [];
     
@@ -100,6 +100,14 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
   // Toggle play/pause - start the actual video when the play button is clicked
   const handlePlayClick = () => {
     setIsPlaying(true);
+  };
+  
+  // Get the watch URL for movies
+  const getMovieWatchUrl = (): string => {
+    if (mediaType === "movies") {
+      return (mediaData as Movie).WatchURL || "";
+    }
+    return "";
   };
   
   // Get cover URL based on media type
@@ -193,6 +201,7 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
             episode={hasEpisodes && currentEpisode ? currentEpisode : undefined}
             episodeList={hasEpisodes ? episodes : undefined}
             onEpisodeChange={setActiveEpisode}
+            movieWatchUrl={mediaType === "movies" ? getMovieWatchUrl() : undefined}
           />
         ) : (
           <VideoPlaceholder 
@@ -474,14 +483,16 @@ export function MediaDetailClient({ mediaData, mediaType }: MediaDetailClientPro
                       <Button 
                         className="w-full gap-2"
                         onClick={handlePlayClick}
-                        disabled={hasEpisodes && episodes.length === 0}
+                        disabled={(hasEpisodes && episodes.length === 0) || (mediaType === "movies" && !getMovieWatchUrl())}
                       >
                         <PlayCircle size={18} />
-                        {hasEpisodes && currentEpisode 
-                          ? `Watch Episode ${activeEpisode}` 
-                          : hasEpisodes && episodes.length === 0 
-                            ? "No Episodes Available" 
-                            : "Watch Now"}
+                        {mediaType === "movies" 
+                          ? "Watch Now" 
+                          : hasEpisodes && currentEpisode 
+                            ? `Watch Episode ${activeEpisode}` 
+                            : hasEpisodes && episodes.length === 0 
+                              ? "No Episodes Available" 
+                              : "Watch Now"}
                       </Button>
                     </div>
                   </div>

@@ -92,37 +92,39 @@ export default async function MediaDetailPage({
 async function MediaDetailContent({ type, id }: { type: string; id: string }) {
   let mediaData: Movie | Series | Anime | null = null;
 
+  console.log("Starting to fetch media:", { type, id });
+
   try {
     // Fetch data based on media type
     if (type === "movies") {
       mediaData = await moviesClient.getMovieDetails(parseInt(id));
     } else if (type === "series") {
       mediaData = await seriesClient.getSeriesById(parseInt(id));
-      // Log the API response
       console.log("Fetched series from API:", mediaData);
-      // Ensure episodes is always an array
       if (mediaData && !Array.isArray(mediaData.episodes)) {
         mediaData.episodes = [];
       }
     } else if (type === "anime") {
+      console.log("Attempting to fetch anime with ID:", id);
       mediaData = await animeClient.getAnimeById(parseInt(id));
-      // Handle empty or missing episodeList array for anime (instead of 404)
+      console.log("Fetched anime from API:", mediaData);
       if (mediaData && !Array.isArray(mediaData.episodeList)) {
         mediaData.episodeList = [];
       }
     }
 
-    // Handle case when data is not found (showing 404 only when the entire media is missing)
+    // Handle case when data is not found
     if (!mediaData) {
+      console.log("No data found for:", { type, id });
       notFound();
     }
   } catch (err) {
     console.error(`Error fetching ${type} with id ${id}:`, err);
-    
+    notFound();
   }
-  console.log("🚀 ~ MediaDetailContent ~ mediaData:", mediaData)
+  
+  console.log("Successfully fetched mediaData:", mediaData);
 
-  // Render the client component with the fetched data
   return (
     <MediaDetailClient
       mediaData={mediaData}

@@ -2,8 +2,12 @@ import { Anime, AnimeListResponse, AnimeResponse, AddAnimeInput, AddAnimeRespons
 
 // GraphQL error type definition
 type GraphQLError = { message: string; [key: string]: unknown };
+const isServer = typeof window === "undefined";
 
-const GRAPHQL_ENDPOINT = "/api/anime/graphql";
+
+const GRAPHQL_ENDPOINT = isServer
+  ? `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://gateway"}/api/anime/graphql`
+  : "/api/anime/graphql";
 
 /**
  * GraphQL client for the Anime API
@@ -14,20 +18,20 @@ export const animeClient = {
    */
   async getAnimeList(): Promise<Anime[]> {
     const query = `
-      query {
-        animeList {
-          id
-          title
-          genre
-          episodes
-          coverUrl
-          episodeList {
-            id
-            title
-            watchUrl
-          }
-        }
-      }
+              query {
+                animeList {
+                  id
+                  title
+                  genre
+                  episodes
+                  coverUrl
+                  episodeList {
+                    id
+                    title
+                    watchUrl
+                  }
+                }
+              }
     `;
 
     const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -55,9 +59,11 @@ export const animeClient = {
    * Fetches a single anime by ID
    */
   async getAnimeById(id: number): Promise<Anime> {
+    console.log("AnimeClient: Starting request for ID:", id);
+    
     const query = `
-      query ($id: Int!) {
-        anime(id: $id) {
+      query {
+        anime(id: ${id}) {
           id
           title
           genre
@@ -72,28 +78,34 @@ export const animeClient = {
       }
     `;
 
-    const response = await fetch(GRAPHQL_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ 
-        query,
-        variables: { id }
-      }),
-    });
+    try {
+      const response = await fetch(GRAPHQL_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`GraphQL request failed with status ${response.status}`);
-    }
+      console.log("AnimeClient: Response status:", response.status);
 
-    const data = await response.json();
-    
-    if (data.errors) {
-      throw new Error(data.errors.map((e: GraphQLError) => e.message).join(", "));
+      if (!response.ok) {
+        throw new Error(`GraphQL request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("AnimeClient: Received data:", data);
+      
+      if (data.errors) {
+        console.error("AnimeClient: GraphQL errors:", data.errors);
+        throw new Error(data.errors.map((e: GraphQLError) => e.message).join(", "));
+      }
+      
+      return (data.data as AnimeResponse).anime;
+    } catch (error) {
+      console.error("AnimeClient: Error in getAnimeById:", error);
+      throw error;
     }
-    
-    return (data.data as AnimeResponse).anime;
   },
 
   /**

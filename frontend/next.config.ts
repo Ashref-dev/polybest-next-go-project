@@ -29,6 +29,23 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.vitalthrills.com",
       },
+      {
+        protocol: "https",
+        hostname: "indigomusic.com",
+      },
+      {
+        protocol: "https",
+        hostname: "wallpapers.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.browardcenter.org",
+      },
+      {
+        protocol: "https",
+        hostname: "sysfilessacbe149174fee.blob.core.windows.net",
+      },
+    
     ],
   },
 };

@@ -20,6 +20,7 @@ interface VideoPlayerProps {
   episode?: Episode;
   episodeList?: Episode[];
   onEpisodeChange?: (episodeNumber: number) => void;
+  movieWatchUrl?: string;
 }
 
 export function VideoPlayer({
@@ -28,7 +29,8 @@ export function VideoPlayer({
   mediaType,
   episode,
   episodeList,
-  onEpisodeChange
+  onEpisodeChange,
+  movieWatchUrl
 }: VideoPlayerProps) {
   // Video player state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -46,7 +48,7 @@ export function VideoPlayer({
   // Video source - in a real implementation, this would come from your API
   const getVideoSource = () => {
     if (mediaType === "movies") {
-      return "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4";
+      return movieWatchUrl || "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4";
     } else if ((mediaType === "series" || mediaType === "anime") && episode?.watchUrl) {
       return episode.watchUrl;
     }
