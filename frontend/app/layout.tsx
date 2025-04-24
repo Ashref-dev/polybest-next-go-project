@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MediaHub - Movies, Series & Anime",
+  title: "PolyBest - Movies, Series & Anime",
   description: "Discover your next favorite movie, series, or anime in one place.",
 };
 
