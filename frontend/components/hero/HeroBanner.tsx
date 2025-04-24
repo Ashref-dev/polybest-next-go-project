@@ -11,7 +11,7 @@ export function HeroBanner() {
       </div>
 
       {/* Hero Content - Positioned on top of the floating hero */}
-      <div className="relative h-[calc(100vh-100px)] flex items-center justify-center pointer-events-none">
+      <div className="relative h-[calc(100vh-50px)] flex items-center justify-center pointer-events-none">
         <div className="text-center max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="space-y-8 bg-black/20 p-8 md:p-10 rounded-2xl pointer-events-auto">
             <div>
