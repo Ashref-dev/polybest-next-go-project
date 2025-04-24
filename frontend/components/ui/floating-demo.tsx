@@ -7,53 +7,45 @@ import Floating, { FloatingElement } from "@/components/ui/parallax-floating";
 
 const exampleImages = [
   {
-    url: "https://images.unsplash.com/photo-1727341554370-80e0fe9ad082?q=80&w=2276&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    author: "Branislav Rodman",
-    link: "https://unsplash.com/photos/a-black-and-white-photo-of-a-woman-brushing-her-teeth-r1SjnJL5tf0",
-    title: "A Black and White Photo of a Woman Brushing Her Teeth",
+    url: "https://wallpapers.com/images/hd/anime-pictures-8hfh38y3ck06cjif.jpg",
+    author: "Monster",
+    title: "Monster Anime Cover",
   },
   {
-    url: "https://images.unsplash.com/photo-1640680608781-2e4199dd1579?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "https://unsplash.com/photos/a-painting-of-a-palm-leaf-on-a-multicolored-background-AaNPwrSNOFE",
-    title: "Neon Palm",
-    author: "Tim Mossholder",
+    url: "https://indigomusic.com/wp-content/uploads/2024/06/untitled-design-11-min-4.png",
+    title: "Ergo Proxy Anime Cover",
+    author: "Ergo Proxy",
   },
   {
-    url: "https://images.unsplash.com/photo-1726083085160-feeb4e1e5b00?q=80&w=3024&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "https://unsplash.com/photos/a-blurry-photo-of-a-crowd-of-people-UgbxzloNGsc",
-    author: "ANDRII SOLOK",
-    title: "A blurry photo of a crowd of people",
+    url: "https://www.browardcenter.org/assets/img/edp_BronxTale_2122_955x500-f30235f38f.jpg",
+    author: "A Bronx Tale",
+    title: "A Bronx Tale Movie Cover",
   },
   {
-    url: "https://images.unsplash.com/photo-1562016600-ece13e8ba570?q=80&w=2838&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "https://unsplash.com/photos/rippling-crystal-blue-water-9-OCsKoyQlk",
-    author: "Wesley Tingey",
-    title: "Rippling Crystal Blue Water",
+    url: "https://sysfilessacbe149174fee.blob.core.windows.net/public-container/clients/worthingtheatres/files/e990fc99-41ef-4a4d-ab89-170b390ebb9c.jpg",
+    author: "Spirited Away",
+    title: "Spirited away",
   },
   {
-    url: "https://images.unsplash.com/photo-1624344965199-ed40391d20f2?q=80&w=2960&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "https://unsplash.com/de/fotos/mann-im-schwarzen-hemd-unter-blauem-himmel-m8RDNiuEXro",
-    author: "Serhii Tyaglovsky",
-    title: "Mann im schwarzen Hemd unter blauem Himmel",
+    url: "https://www.bpmcdn.com/f/files/kelowna/import/2022-06/29555137_web1_220630-KCN-Breaking-Bad-_1.jpg",
+    author: "Breaking Bad",
+    title: "Breaking Bad Series Cover",
   },
   {
-    url: "https://images.unsplash.com/photo-1689553079282-45df1b35741b?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "https://unsplash.com/photos/a-woman-with-a-flower-crown-on-her-head-0S3muIttbsY",
-    author: "Vladimir Yelizarov",
-    title: "A women with a flower crown on her head",
+    url: "https://www.vitalthrills.com/wp-content/uploads/2024/12/invincibleccxp1.jpg",
+    author: "Invincible",
+    title: "Invincible Series Cover",
   },
   {
-    url: "https://images.unsplash.com/photo-1721968317938-cf8c60fccd1a?q=80&w=2728&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    title: "A blurry photo of white flowers in a field",
-    author: "Eugene Golovesov",
-    link: "https://unsplash.com/photos/a-blurry-photo-of-white-flowers-in-a-field-6qbx0lzGPyc",
+    url: "https://m.media-amazon.com/images/M/MV5BNmI1MmYxNWQtY2E5NC00ZTlmLWIzZGEtNzM1YmE3NDA5NzhjXkEyXkFqcGc@._V1_.jpg",
+    author: "Jujutsu Kaisen",
+    title: "Jujutsu Kaisen Series Cover",
   },
   {
-    url: "https://images.unsplash.com/photo-1677338354108-223e807fb1bd?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    author: "Mathilde Langevin",
-    link: "https://unsplash.com/photos/a-table-topped-with-two-wine-glasses-and-plates-Ig0gRAHspV0",
-    title: "A table topped with two wine glasses and plates",
-  },
+    url: "https://upload.wikimedia.org/wikipedia/en/e/e4/Steins%3BGate_cover_art.jpg",
+    author: "Steins;Gate",
+    title: "Steins;Gate Anime Cover",
+  }
 ];
 
 const Preview = () => {
@@ -116,14 +108,6 @@ const Preview = () => {
             className="w-28 h-28 md:w-36 md:h-36 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform rounded-lg shadow-lg"
           />
         </FloatingElement>
-        <FloatingElement depth={2} className="top-[70%] left-[77%]">
-          <motion.img
-            initial={{ opacity: 0 }}
-            alt={exampleImages[7].title}
-            src={exampleImages[7].url}
-            className="w-28 h-28 md:w-36 md:h-48 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform rounded-lg shadow-lg"
-          />
-        </FloatingElement>
         <FloatingElement depth={4} className="top-[73%] left-[15%]">
           <motion.img
             initial={{ opacity: 0 }}
@@ -132,12 +116,20 @@ const Preview = () => {
             className="w-40 md:w-52 md:h-64 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform rounded-lg shadow-lg"
           />
         </FloatingElement>
-        <FloatingElement depth={1} className="top-[80%] left-[50%]">
+        <FloatingElement depth={1.5} className="top-[65%] left-[70%]">
           <motion.img
             initial={{ opacity: 0 }}
             alt={exampleImages[6].title}
             src={exampleImages[6].url}
             className="w-24 h-24 md:w-32 md:h-32 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform rounded-lg shadow-lg"
+          />
+        </FloatingElement>
+        <FloatingElement depth={0.8} className="top-[45%] left-[80%]">
+          <motion.img
+            initial={{ opacity: 0 }}
+            alt={exampleImages[7].title}
+            src={exampleImages[7].url}
+            className="w-20 h-20 md:w-28 md:h-28 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform rounded-lg shadow-lg"
           />
         </FloatingElement>
       </Floating>

@@ -5,20 +5,15 @@ import { Preview as FloatingHero } from "@/components/ui/floating-demo";
 export function HeroBanner() {
   return (
     <section className="relative h-[calc(100vh-200px)] overflow-hidden">
-      {/* Hero Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black to-zinc-900">
-        <div className="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-50" />
-      </div>
-
       {/* Floating Hero Component */}
       <div className="absolute inset-0">
         <FloatingHero />
       </div>
 
       {/* Hero Content - Positioned on top of the floating hero */}
-      <div className="relative h-[calc(100vh-200px)] flex items-center justify-center pointer-events-none">
+      <div className="relative h-[calc(100vh-100px)] flex items-center justify-center pointer-events-none">
         <div className="text-center max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="space-y-8 backdrop-blur-lg bg-black/20 p-8 md:p-10 rounded-2xl pointer-events-auto">
+          <div className="space-y-8 bg-black/20 p-8 md:p-10 rounded-2xl pointer-events-auto">
             <div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-white">
                 <span className="block mb-1 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">

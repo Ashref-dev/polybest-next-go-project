@@ -49,7 +49,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "img.newsroom.cj.net",
       },
-    
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+      },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
     ],
   },
 };
