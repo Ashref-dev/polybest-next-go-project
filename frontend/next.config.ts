@@ -45,6 +45,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "sysfilessacbe149174fee.blob.core.windows.net",
       },
+      {
+        protocol: "https",
+        hostname: "img.newsroom.cj.net",
+      },
     
     ],
   },

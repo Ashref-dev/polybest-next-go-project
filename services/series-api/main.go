@@ -31,7 +31,7 @@ type Series struct {
 
 // In-memory data store (using a map for easier ID lookup)
 var seriesStore = make(map[int]Series)
-var nextSeriesID = 3
+var nextSeriesID = 4
 var storeMutex = &sync.RWMutex{} // Mutex to handle concurrent access
 
 // Initialize with some sample data
@@ -77,6 +77,31 @@ func init() {
 				WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP7.ia.mp4"},
 			{ID: 8, Title: "Where I Really Come From",
 				WatchURL: "https://dn721603.ca.archive.org/0/items/Invincible_Season_1/EP8.ia.mp4"},
+		},
+	}
+
+	seriesStore[3] = Series{
+		ID:              3,
+		Title:           "Severance",
+		Genre:           "Sci-Fi Thriller", // Assumed genre
+		TotalEpisodes:   12,                // Counted from the provided image (may be incomplete)
+		WatchedEpisodes: 0,
+		CoverURL:        "https://img.newsroom.cj.net/wp-content/uploads/2023/07/image-1.png",
+		Episodes: []Episode{
+			// Based on provided image and URL structure, encoding special characters in URL filename part
+			// Using the base path from S01E01 and host from S01E02 example for all episodes
+			{ID: 1, Title: "GOOD NEWS ABOUT HELL-1", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S01E01%20-%20GOOD%20NEWS%20ABOUT%20%20HELL-1.mp4"}, // S01E01
+			{ID: 2, Title: "HALF LOOP", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S01E02%20-%20HALF%20LOOP.mp4"},                                  // S01E02
+			{ID: 3, Title: "IN PERPETUITY", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S01E03%20-%20IN%20PERPETUITY.mp4"},                          // S01E03
+			{ID: 4, Title: "HIDE AND SEEK", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S01E06%20-%20HIDE%20AND%20SEEK.mp4"},                        // S01E06 (Skipped E04, E05, E07 as not in image)
+			{ID: 5, Title: "WHAT'S FOR DINNER", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S01E08%20-%20WHAT%27S%20FOR%20DINNER.mp4"},              // S01E08 - Encoded ' as %27
+			{ID: 6, Title: "HELLO, MS. COBELL", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S02E01%20-%20HELLO%2C%20MS.%20COBELL.mp4"},              // S02E01 - Encoded , as %2C and . as %2E
+			{ID: 7, Title: "GOODBYE MS. SELVIG", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S02E02%20-%20GOODBYE%20MS.%20SELVIG.mp4"},              // S02E02 - Encoded . as %2E
+			{ID: 8, Title: "WHO IS ALIVE", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S02E03%20-%20WHO%20IS%20ALIVE.mp4"},                          // S02E03
+			{ID: 9, Title: "WOES HOLLOW", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S02E04%20-%20WOES%20HOLLOW.mp4"},                              // S02E04
+			{ID: 10, Title: "TROJAN'S HORSE", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S02E05%20-%20TROJAN%27S%20HORSE.mp4"},                     // S02E05 - Encoded ' as %27
+			{ID: 11, Title: "ATTILA", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S02E06%20-%20ATTILA.mp4"},                                         // S02E06
+			{ID: 12, Title: "CHIKHAI BARDO", WatchURL: "https://ia800107.us.archive.org/28/items/severance-s-01-e-01-good-news-about-hell-1/SEVERANCE%20S02E07%20-%20CHIKHAI%20BARDO.mp4"},                         // S02E07 (Skipped E08+ as not in image)
 		},
 	}
 }

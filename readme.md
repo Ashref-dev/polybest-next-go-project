@@ -15,7 +15,45 @@ The system consists of the following components:
 3.  **Anime API (`services/anime-api`):** A GraphQL API written in Go (using `graphql-go`) to manage anime data. Listens internally on port `8082`.
 4.  **Movies API (`services/movies-api`):** A simplified SOAP API written in Go (using `encoding/xml`) to manage movie data. Listens internally on port `8083`.
 5.  **API Gateway (`gateway`):** A Traefik instance acting as a reverse proxy and API gateway. It routes incoming requests from the host machine (port 80) to the appropriate backend service based on URL paths. It also provides a dashboard for monitoring.
-6.  **Docker Compose (`docker-compose.yml`):** Defines and orchestrates all the services, networks, and configurations required to run the entire stack.
+6.  **Docker Compose (`docker-compose.yml`):** Defines and orchestrates all the services, networks, and configurations required to run the entire system.
+
+```mermaid
+graph TD
+    subgraph "User's Browser"
+        A[User @ localhost]
+    end
+
+    subgraph "Docker Host (Port Mapping)"
+        B(Traefik Gateway Container)
+        A -- HTTP Request (Port 80) --> B
+    end
+
+    subgraph "Docker Network (webnet)"
+        B -- Route based on Path --> C{Routing Logic}
+
+        subgraph "Frontend Service"
+            D["Frontend Container\n(Port 3000)"]
+        end
+        C -- Path: / --> D
+
+        subgraph "Backend API Services"
+            E["Series API Container\n(REST - Port 8081)"]
+            F["Anime API Container\n(GraphQL - Port 8082)"]
+            G["Movies API Container\n(SOAP - Port 8083)"]
+        end
+        C -- Path: /api/series --> E
+        C -- Path: /api/anime --> F
+        C -- Path: /api/movies --> G
+
+        D -- API Call --> B
+    end
+
+    style B fill:#000000,stroke:#333,stroke-width:2px
+    style D fill:#000000,stroke:#333,stroke-width:2px
+    style E fill:#000000,stroke:#333,stroke-width:2px
+    style F fill:#000000,stroke:#333,stroke-width:2px
+    style G fill:#000000,stroke:#333,stroke-width:2px
+```
 
 ## Prerequisites
 
@@ -45,8 +83,7 @@ Once the containers are running, you can access the different parts of the syste
     *   `http://localhost` (or `http://localhost:80`)
 
 *   **Traefik Dashboard:** Open your web browser and navigate to:
-    *   `http://localhost:8989`
-    *   *(Note: The host port is now 8989 to avoid conflicts with port 8080)*
+    *   `http://localhost:8080`
 
 *   **API Gateway Endpoints:** The backend APIs are accessible through the gateway at the following base paths:
     *   Series API (REST): `http://localhost/api/series`
