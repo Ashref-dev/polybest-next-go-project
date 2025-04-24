@@ -6,6 +6,9 @@ This project fulfills the requirements for the Web Services course mini-project 
 
 **Theme:** Content Website (Movies, Series, Anime)
 
+![Screenshot](./img.jpeg)
+
+
 ## Architecture
 
 The system consists of the following components:
